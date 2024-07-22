@@ -1,0 +1,90 @@
+
+<template>
+	<div class="container">
+		<div class="top">
+			<h3>hover图片,</h3>
+o
+		</div>
+      <div class="one">
+      	<img :src="imgData">
+      	<div class="word">阿米尔·汗（Aamir Khan），1965年3月14日出生于印度孟买，印度宝莱坞演员、导演、制片人。</div>
+      </div>
+
+	</div>
+</template>
+<script>
+	export default {
+				data() {
+					return {
+						imgData: require('@/assets/amierhan.png'),
+					}
+				},
+		
+	}
+	
+</script>
+<style scoped>
+	.container {
+		width: 1000px;
+		height: 580px;
+		margin: 50px auto;
+		border: 1px solid green;
+		position: relative;
+	}
+
+	.top {
+		margin: 0 auto 0px;
+		padding: 10px 0;
+		background: maroon;
+		color: #fff;
+	}
+
+	.one {
+		width: 500px;
+		height: 300px;
+		position: relative;
+		z-index: 1;
+		cursor: pointer;
+		margin: 50px auto 0;
+	}
+
+	.one img {
+		width: 500px;
+		height: 300px;
+	}
+
+	.one .word {
+		display: none;
+		width: 500px;
+		height: 300px;
+		background-color: rgba(179, 8, 10, 0.8);
+		position: absolute;
+		z-index: 2;
+		left: 0;
+		top: 0;
+		padding: 80px 50px;
+		font-size: 20px;
+		color: #fff;
+		font-family: "microsoft yahei";
+		line-height: 30px;
+		text-align: center;
+		box-sizing: border-box;
+	}
+
+	.one:hover .word {
+		display: block;
+	}
+
+	.one .word::after {
+		content: "";
+		position: absolute;
+		z-index: 3;
+		width: 120px;
+		height: 1px;
+		background: #fff;
+		bottom: 80px;
+		left: 190px
+	}
+</style>
+
+
