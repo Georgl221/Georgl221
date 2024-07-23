@@ -1,0 +1,29 @@
+import com.deepoove.poi.XWPFTemplate;
+import com.deepoove.poi.data.PictureRenderData;
+import com.deepoove.poi.data.Pictures;
+ 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+ 
+public class demo1 {
+    public static String test2(String mess,String pname) throws IOException {
+        
+
+        String path = "D:\\ml\\idea\\jishedemo1\\src\\main\\resources\\doc\\demo1.docx";
+
+ String pathend="D:\\ml\\idea\\jishedemo1\\src\\main\\resources\\doc\\"+pname+".docx";
+ 
+
+        XWPFTemplate template = XWPFTemplate.compile(path);
+        Map<String,Object> map= new HashMap<>();
+
+        String ws=mess;
+        map.put("text",ws);
+
+        template.render(map);
+        template.writeAndClose(new FileOutputStream(pathend));
+        return pathend;
+    }
+}
