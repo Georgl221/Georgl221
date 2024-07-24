@@ -1,0 +1,94 @@
+/**
+ * 用户账户：用于保存用户登录信息(User)表控制层
+ */
+@Slf4j
+@RestController
+@RequestMapping("user")
+public class UserController extends BaseController<User, UserService> {
+    /**
+     * 服务对象
+     */
+    @Autowired
+    public UserController(UserService service) {
+        setService(service);
+    }
+ 
+    /**
+     * Token服务
+     */
+    @Autowired
+    private AccessTokenService tokenService;
+ 
+    @Autowired
+    private UserGroupService userGroupService;
+ 
+    /**
+     * 注册
+     * @param user
+     * @return
+     */
+    @PostMapping("register")
+    public Map<String, Object> signUp(@RequestBody User user) {
+        // 查询用户
+        Map<String, String> query = new HashMap<>();
+        query.put("username",user.getUsername());
+        List list = service.select(query, new HashMap<>()).getResultList();
+        if (list.size()>0){
+            return error(30000, "用户已存在");
+        }
+        user.setUserId(null);
+        user.setPassword(service.encryption(user.getPassword()));
+        service.save(user);
+        return success(1);
+    }
+ 
+    /**
+     * 找回密码
+     * @param form
+     * @return
+     */
+    @PostMapping("forget_password")
+    public Map<String, Object> forgetPassword(@RequestBody User form,HttpServletRequest request) {
+        JSONObject ret = new JSONObject();
+        String username = form.getUsername();
+        String code = form.getCode();
+        String password = form.getPassword();
+        // 判断条件
+        if(code == null || code.length() == 0){
+            return error(30000, "验证码不能为空");
+        }
+        if(username == null || username.length() == 0){
+            return error(30000, "用户名不能为空");
+        }
+        if(password == null || password.length() == 0){
+            return error(30000, "密码不能为空");
+        }
+ 
+        // 查询用户
+        Map<String, String> query = new HashMap<>();
+        query.put("username",username);
+        Query select = service.select(query, service.readConfig(request));
+        List list = select.getResultList();
+        if (list.size() > 0) {
+            User o = (User) list.get(0);
+            JSONObject query2 = new JSONObject();
+            JSONObject form2 = new JSONObject();
+            // 修改用户密码
+            query2.put("user_id",o.getUserId());
+            form2.put("password",service.encryption(password));
+            service.update(query, service.readConfig(request), form2);
+            return success(1);
+        }
+        return error(70000,"用户不存在");
+    }
+ 
+    /**
+     * 登录
+     * @param data
+     * @param httpServletRequest
+     * @return
+     */
+    @PostMapping("login")
+    public Map<String, Object> login(@RequestBody Map<String, String> data, HttpServletRequest httpServletRequest) {
+        log.info("[执行登录接口]");
+ 
